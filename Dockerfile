@@ -9,12 +9,12 @@ RUN git clone https://github.com/alan-cy-lai/twint-pushover.git
 FROM python:3.6
 RUN pip install --upgrade pip
 
-RUN useradd -ms /bin/bash worker && \
-    mkdir /app && \
-    chown -R worker:worker /app
+RUN useradd -ms /bin/bash worker
+RUN mkdir /app
 WORKDIR /app
 COPY --from=source /source/twint /app/twint
 COPY --from=source /source/twint-pushover /app/twint-pushover
+RUN chown -R worker:worker /app
 
 USER worker
 WORKDIR /app/twint
