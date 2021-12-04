@@ -18,12 +18,12 @@ def readLastTweetTime():
             timeStr = timeFile.readline().strip()
             if len(timeStr) <= 0:
                 writeLastTweetTime(currentTime)
-                exit()
+                return currentTime
             else:
                 return timeStr
     else:
         writeLastTweetTime(currentTime)
-        exit()
+        return currentTime
 
 def writeLastTweetTime(time):
     timeFile = open(lastParsedTweetTimeFileName, "w")
