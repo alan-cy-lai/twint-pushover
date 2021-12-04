@@ -18,6 +18,7 @@ RUN chown -R worker:worker /app
 
 USER worker
 WORKDIR /app/twint
+ENV PATH="/home/worker/.local/bin:${PATH}"
 RUN pip3 install . -r requirements.txt
 
 WORKDIR /app/twint-pushover
