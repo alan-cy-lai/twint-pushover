@@ -31,12 +31,8 @@ def writeLastTweetTime(time):
     timeFile.close()
 
 def sendToPushover(token, userKey, localTimeZone, data):
-    import pytz
-
-    localTimeZone = pytz.timezone(localTimeZone)
     timeString = "{date} {time}".format(date = data['date'], time = data['time'])
-    localizedTime = datetime.strptime(timeString, timeFormat).astimezone(localTimeZone).isoformat(' ', 'minutes')
-    message = "Time:{datetime} \n\nTweet: {tweet} \n\nLink: {link}".format(datetime = localizedTime, tweet = data['tweet'], link = data['link'])
+    message = "Time:{datetime} \n\nTweet: {tweet} \n\nLink: {link}".format(datetime = timeString, tweet = data['tweet'], link = data['link'])
     
     conn = http.client.HTTPSConnection("api.pushover.net:443")
     conn.request("POST", "/1/messages.json",
@@ -59,7 +55,9 @@ def jobone():
         exit()
     localTimeZone = os.getenv('TIMEZONE')
     if (localTimeZone is None):
-        localTimeZone = 'US/Pacific'
+        localTimeZone = 'America/Los_Angeles'
+    os.environ['TZ'] = localTimeZone
+    time.tzset()
 
     if os.path.exists(outputFileName):
         os.remove(outputFileName)
@@ -89,7 +87,6 @@ def jobone():
             for index, data in enumerate(rows):
                 if (index == 0):
                     writeLastTweetTime("{date} {time}".format(date = data["date"], time = data["time"]))
-                
                 sendToPushover(pushoverToken, pushoverUserKey, localTimeZone, data)
 
 # run once when you start the program
