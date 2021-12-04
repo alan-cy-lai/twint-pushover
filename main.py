@@ -70,7 +70,7 @@ def jobone():
     print ("Fetching Tweets")    
     c = twint.Config()
 	# choose username (optional)
-    c.Username = twitterUsername
+    c.Username = "lbabinz"
     # choose beginning time (narrow results)
     c.Since = lastTweetTime
     # set limit on total tweets
