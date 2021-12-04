@@ -23,4 +23,4 @@ RUN pip3 install . -r requirements.txt
 WORKDIR /app/twint-pushover
 RUN rm -R /app/twint
 
-ENTRYPOINT ["python", "main.py"]
+ENTRYPOINT ["python", "-u", "main.py"]
