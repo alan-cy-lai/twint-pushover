@@ -5,7 +5,7 @@ WORKDIR /source
 RUN git clone https://github.com/alan-cy-lai/twint.git
 RUN git clone https://github.com/alan-cy-lai/twint-pushover.git
 
-FROM python:3.6
+FROM python:3.6-slim
 RUN pip install --upgrade pip
 
 RUN useradd -ms /bin/bash worker
