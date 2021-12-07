@@ -7,12 +7,12 @@ A wrapper for the Twint client that scrapes a specific user's tweets and replies
 - Pip3
 
 # Installation
-The application can be ran manually, or by buildding an image using the Dockerfile and running it.
+The application can be ran manually, or by building an image using the Dockerfile and running it.
 
 ## Manual Install
 First, we need to install Twint so that we can use it as a library.  I forked the original repo due to a need to make a change to the requirements.txt file for it, as it seems like the original maintainer have stopped updating it.
 
-# Installing Twint (From my fork)
+### Installing Twint (From my fork)
 1) Clone the Twint repo by running `git clone https://github.com/alan-cy-lai/twint.git`
 2) Install Twint by navigating into the project and running `pip3 install . -r requirements.txt`
 3) Clone the Twint Pushover repo by running `git clone https://github.com/alan-cy-lai/twint-pushover.git`
