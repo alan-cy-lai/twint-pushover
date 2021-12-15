@@ -48,4 +48,5 @@ services:
               - PUSHOVER_TOKEN={token}
               - PUSHOVER_USER_KEY={userkey}
               - TIMEZONE={timezone}
+          restart: always
 ```
