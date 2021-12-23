@@ -83,7 +83,7 @@ def jobone():
 
     if os.path.exists(outputFileName):
         with open(outputFileName, newline='') as csvfile:
-            rows = csv.DictReader(csvfile, delimiter=',', quotechar='|')
+            rows = csv.DictReader(csvfile, delimiter=',', quotechar='"')
             for index, data in enumerate(rows):
                 if (index == 0):
                     writeLastTweetTime("{date} {time}".format(date = data["date"], time = data["time"]))
