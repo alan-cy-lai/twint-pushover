@@ -10,7 +10,6 @@ outputFileName = "output.csv"
 lastParsedTweetTimeFileName = 'last_timestamp.txt'
 timeFormat = '%Y-%m-%d %H:%M:%S'
 
-# you can change the name of each "job" after "def" if you'd like.
 def readLastTweetTime():
     currentTime = datetime.now().strftime(timeFormat)
     if os.path.exists(lastParsedTweetTimeFileName):
@@ -30,6 +29,9 @@ def writeLastTweetTime(time):
     timeFile.write(time)
     timeFile.close()
 
+def isReplyTweet(tweet):
+    return tweet.startswith('@')
+
 def sendToPushover(token, userKey, localTimeZone, data):
     timeString = "{date} {time}".format(date = data['date'], time = data['time'])
     message = "Time:{datetime} \n\nTweet: {tweet} \n\nLink: {link}".format(datetime = timeString, tweet = data['tweet'], link = data['link'])
@@ -44,6 +46,7 @@ def sendToPushover(token, userKey, localTimeZone, data):
     conn.getresponse()
 
 def jobone():
+    # Read environment settings
     pushoverToken = os.getenv('PUSHOVER_TOKEN')
     pushoverUserKey = os.getenv('PUSHOVER_USER_KEY')
     if (pushoverToken is None) or (pushoverUserKey is None):
@@ -58,6 +61,7 @@ def jobone():
         localTimeZone = 'America/Los_Angeles'
     os.environ['TZ'] = localTimeZone
     time.tzset()
+    includeReplies = os.getenv('INCLUDE_REPLIES', 'False').lower() == 'true'
 
     if os.path.exists(outputFileName):
         os.remove(outputFileName)
@@ -87,7 +91,10 @@ def jobone():
             for index, data in enumerate(rows):
                 if (index == 0):
                     writeLastTweetTime("{date} {time}".format(date = data["date"], time = data["time"]))
-                sendToPushover(pushoverToken, pushoverUserKey, localTimeZone, data)
+                if (includeReplies):
+                    sendToPushover(pushoverToken, pushoverUserKey, localTimeZone, data)
+                elif (isReplyTweet(data['tweet']) == False):
+                    sendToPushover(pushoverToken, pushoverUserKey, localTimeZone, data)
 
 # run once when you start the program
 
