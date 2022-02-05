@@ -32,6 +32,22 @@ def writeLastTweetTime(time):
 def isReplyTweet(tweet):
     return tweet.startswith('@')
 
+def fetchTweets(username, since, outputFileName):   
+    c = twint.Config()
+	# choose username (optional)
+    c.Username = username
+    # choose beginning time (narrow results)
+    c.Since = since
+    # set limit on total tweets
+    c.Limit = 100
+    # no idea, but makes the csv format properly
+    c.Store_csv = True
+    # format of the csv
+    c.Custom["tweet"] = ["id", "date", "time", "tweet", "link"]
+    # change the name of the csv file
+    c.Output = outputFileName
+    twint.run.Search(c)
+
 def sendToPushover(token, userKey, localTimeZone, data):
     timeString = "{date} {time}".format(date = data['date'], time = data['time'])
     message = "Time:{datetime} \n\nTweet: {tweet} \n\nLink: {link}".format(datetime = timeString, tweet = data['tweet'], link = data['link'])
@@ -56,9 +72,7 @@ def jobone():
     if (twitterUsername is None):
         print("TWITTER_USERNAME env variable is missing")
         exit()
-    localTimeZone = os.getenv('TIMEZONE')
-    if (localTimeZone is None):
-        localTimeZone = 'America/Los_Angeles'
+    localTimeZone = os.getenv('TIMEZONE', 'America/Los_Angeles')
     os.environ['TZ'] = localTimeZone
     time.tzset()
     includeReplies = os.getenv('INCLUDE_REPLIES', 'False').lower() == 'true'
@@ -69,21 +83,7 @@ def jobone():
     # Add one second so we don't keep getting the last tweet we already processed
     lastTweetTime = (datetime.strptime(lastTweetTime, timeFormat) + timedelta(seconds=1)).strftime(timeFormat)
     
-    print ("Fetching Tweets")    
-    c = twint.Config()
-	# choose username (optional)
-    c.Username = twitterUsername
-    # choose beginning time (narrow results)
-    c.Since = lastTweetTime
-    # set limit on total tweets
-    c.Limit = 100
-    # no idea, but makes the csv format properly
-    c.Store_csv = True
-    # format of the csv
-    c.Custom["tweet"] = ["id", "date", "time", "tweet", "link"]
-    # change the name of the csv file
-    c.Output = outputFileName
-    twint.run.Search(c)
+    fetchTweets(twitterUsername, lastTweetTime, outputFileName)
 
     if os.path.exists(outputFileName):
         with open(outputFileName, newline='') as csvfile:
